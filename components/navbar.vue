@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar container" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <nuxt-link to="/" class="navbar-item logo"><b>Migrate</b></nuxt-link>
+      <nuxt-link to="/" class="navbar-item logo">MY<b>GR8</b></nuxt-link>
 
       <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" @click="toggle" >
         <span aria-hidden="true"></span>

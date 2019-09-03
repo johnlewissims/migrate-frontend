@@ -1,0 +1,22 @@
+.page-enter-active, .page-leave-active {
+  transition: all 0.5s;
+}
+
+.page-enter, .page-leave-action {
+  opacity: 0;
+  transform-origin: 50% 50%;
+}
+
+* {
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+.form-wrap {
+  max-width: 330px;
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+
+.select, .select select {
+  width: 100%;
+}

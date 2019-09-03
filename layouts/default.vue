@@ -9,24 +9,23 @@
 
 import Navbar from '@/components/navbar.vue'
 export default {
+  data () {
+    return {
+      title: 'MYGR8'
+    }
+  },
+  head () {
+    return {
+      title: this.title,
+      meta: [
+        // hid is used as unique identifier. Do not use `vmid` for it as it will not work
+        { hid: 'description', name: 'description', content: 'My custom description' }
+      ]
+    }
+  },
   components: {
     Navbar
   }
 }
 
 </script>
-
-
-<style>
-
-  * {
-    font-family: 'Nunito Sans', sans-serif;
-  }
-
-  .form-wrap {
-    max-width: 300px;
-    margin-top: 100px;
-    margin-bottom: 100px;
-  }
-
-</style>

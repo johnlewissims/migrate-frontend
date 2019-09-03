@@ -56,7 +56,6 @@
           }
         })
         .then(data => {
-          console.log(data);
           this.$router.push("/dashboard");
         })
         .catch(err => {

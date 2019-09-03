@@ -12,13 +12,13 @@
                 <i class="fas fa-user"></i>
               </span>
             </p>
-            <p class="help is-danger" v-if="errors.name">{{errors.name[0]}}</p>
+            <p class="help is-danger" v-if="errors.first_name">{{errors.first_name[0]}}</p>
           </div>
           <div class="field">
             <p class="control is-expanded">
               <input v-model.trim="form.last_name" class="input" type="text" placeholder="Last Name">
             </p>
-            <p class="help is-danger" v-if="errors.name">{{errors.name[0]}}</p>
+            <p class="help is-danger" v-if="errors.last_name">{{errors.last_name[0]}}</p>
           </div>
         </div>
       </div>
@@ -30,6 +30,27 @@
           </span>
         </p>
         <p class="help is-danger" v-if="errors.email">{{errors.email[0]}}</p>
+      </div>
+      <div class="field">
+        <div class="control">
+          <p class="help">Who are you?</p>
+          <div class="select is-multiple">
+            <select v-model.trim="form.role" multiple size="2">
+              <option value="Influencer" default>Influencer</option>
+              <option value="Sponsor">Sponsor</option>
+            </select>
+          </div>
+        </div>
+        <p class="help is-danger" v-if="errors.role">{{errors.role[0]}}</p>
+      </div>
+      <div class="field">
+        <p class="control has-icons-left has-icons-right">
+          <input v-model.trim="form.company" class="input" type="text" placeholder="Company / Organization">
+          <span class="icon is-small is-left">
+            <i class="fas fa-building"></i>
+          </span>
+        </p>
+        <p class="help is-danger" v-if="errors.company">{{errors.company[0]}}</p>
       </div>
       <div class="field">
         <p class="control has-icons-left">
@@ -60,13 +81,17 @@
       return {
         form: {
           email: '',
-          name: '',
+          first_name: '',
+          last_name: '',
+          role: [],
+          company: '',
           password: ''
         }
       }
     },
     methods: {
       submit() {
+        console.log(this.form)
         this.$axios
         .$post("register", this.form)
         .then(data => {
