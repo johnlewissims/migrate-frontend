@@ -1,20 +1,24 @@
 <template>
   <div class="container form-wrap">
-    <h1 class="title">Create</h1>
+    <h1 class="title">Edit</h1>
     <hr>
     <div class="form-wraper">
       <div class="field">
         <p class="control">
-          <input v-model.trim="title" class="input" type="text" placeholder="Video Title">
+          <input class="input" type="text" v-model="video.title">
         </p>
         <p class="help is-danger" v-if="errors.title">{{errors.title[0]}}</p>
       </div>
       <div class="field">
         <p class="control">
-          <textarea v-model.trim="description" class="textarea" type="text" placeholder="Description" />
+          <textarea v-model.trim="video.description" class="textarea" type="text" placeholder="Description" />
         </p>
         <p class="help is-danger" v-if="errors.description">{{errors.description[0]}}</p>
       </div>
+      <video v-if="video" style="width:600px;max-width:100%;" controls="">
+        <source v-bind:src="video" type="video/mp4">
+        Your browser does not support HTML5 video.
+      </video>
       <div class="field is-horizontal">
         <div class="field-body">
           <div class="field">
@@ -52,7 +56,7 @@
       <p class="help">{{ this.filename }}</p>
       <div class="field">
         <p class="control">
-          <button class="button is-success" v-on:click="submitFile()">
+          <button class="button is-success" v-on:click="update()">
             Submit Video
           </button>
         </p>
@@ -69,49 +73,56 @@
   export default{
     middleware: ['auth'],
     data() {
-      return {
-        file: '',
+			return {
+				video: '',
+        loader: true,
+        generalError: '',
         filename: '',
         title: '',
-        description: '',
-        loader: false,
-        generalError: '',
-      }
-    },
-    methods: {
+        description: ''
+			}
+		},
+		mounted() {
+      this.loadVideo()
+		},
+		methods: {
       handleFileUpload() {
-        console.log(this.file);
-        this.file = this.$refs.file.files[0];
         this.filename = this.$refs.file.files[0].name;
         this.type = this.$refs.file.files[0].type;
         this.size = this.$refs.file.files[0].size;
       },
-      submitFile(){
-        this.loader = true;
-        let formData = new FormData();
-        formData.append('title', this.title);
-        formData.append('description', this.description);
-        formData.append('file', this.file);
-        formData.append('filename', this.filename);
-        formData.append('user_id', this.user.id);
-        formData.append('type', this.type);
-        formData.append('size', this.size);
-        this.$axios.post( 'videos',
-        formData,
-            {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
-          }
-        ).then(response => {
+      loadVideo() {
+        this.$axios.get(`/private/view/${this.$route.params.id}`, {responseType: 'blob'})
+        .then((getResponse) => {
+          this.video = URL.createObjectURL(getResponse.data)
+          this.loader = false
+        })
+      },
+      loadInformation() {
+        this.$axios.get(`/videos/${this.$route.params.id}`)
+        .then((getResponse) => {
+          this.filename = URL.createObjectURL(getResponse.data)
+          this.loader = false
+        })
+      },
+			update() {
+			  this.$axios.patch(`/videos/${this.$route.params.id}`, {
+					title: this.video.title,
+          description: this.video.description,
+          file: this.$refs.file.files[0],
+          filename: this.filename,
+          type: this.type,
+          size: this.size,
+				}).then(response => {
 						this.loader = false;
-            this.$router.push("/dashboard");
+            console.log(this.$refs.file.files[0]);
+            //this.$router.push("/dashboard");
 					},err => {
             this.loader = false;
             this.generalError = "An error occured uploading your video.  Please try again later."
 				  });
-      },
-    }
+			}
+		}
   }
 
 </script>
