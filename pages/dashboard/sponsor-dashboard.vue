@@ -6,43 +6,28 @@
     <div class="container my-container">
       <div class="columns">
         <div class="column">
-          <h3 class="title is-3">Updates</h3>
-          <div class="card">
-            <div class="card-content">
-              <div class="content">
-                <a href=#>Frank Hadley</a> just submitted a video "<a href="#">In the Locker Room with the Mets!</a>" and is awaiting your approval.
-                <br><br>
-                <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-              </div>
-            </div>
-          </div>
+          <MyVideos />
         </div>
         <div class="column">
-          <h3 class="title is-3">My Videos</h3>
-          <div class="card">
-            <header class="card-header">
-              <p class="card-header-title">
-                In the Locker Room with the Mets!
-              </p>
-            </header>
-            <div class="card-content">
-              <div class="content">
-                A short video of the team ganing out before the game.
-                <a href="#">@frank</a>. <a href="#">#mets</a> <a href="#">#baseball</a>
-                <br><br>
-                <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-              </div>
-            </div>
-            <footer class="card-footer">
-              <a href="#" class="card-footer-item">Status</a>
-              <a href="#" class="card-footer-item">View</a>
-            </footer>
-          </div>
+          <MyWatermarks />
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<script>
+
+import MyWatermarks from '@/components/mywatermarks.vue'
+import MyVideos from '@/components/myvideos.vue'
+export default {
+  components: {
+    MyWatermarks,
+    MyVideos
+  }
+}
+
+</script>
 
 <style scoped>
 

@@ -5,20 +5,22 @@
     <div class="form-wraper">
       <div class="field">
         <p class="control">
-          <input class="input" type="text" v-model="video.title">
+          <input class="input" type="text" v-model="videoData.title">
         </p>
         <p class="help is-danger" v-if="errors.title">{{errors.title[0]}}</p>
       </div>
       <div class="field">
         <p class="control">
-          <textarea v-model.trim="video.description" class="textarea" type="text" placeholder="Description" />
+          <textarea v-model.trim="videoData.description" class="textarea" type="text" placeholder="Description" />
         </p>
         <p class="help is-danger" v-if="errors.description">{{errors.description[0]}}</p>
       </div>
-      <video v-if="video" style="width:600px;max-width:100%;" controls="">
-        <source v-bind:src="video" type="video/mp4">
-        Your browser does not support HTML5 video.
-      </video>
+      <div v-if="!filename">
+        <video v-if="video" style="width:600px;max-width:100%;" controls="">
+          <source v-bind:src="video" type="video/mp4">
+          Your browser does not support HTML5 video.
+        </video>
+      </div>
       <div class="field is-horizontal">
         <div class="field-body">
           <div class="field">
@@ -54,6 +56,27 @@
         </div>
       </div>
       <p class="help">{{ this.filename }}</p>
+      <div class="field" v-if="filename">
+        <div class="select">
+          <select ref="sponsor" v-on:change="sponsorSelect()">
+            <option>Select a Sponsor</option>
+            <option v-for="sponsor in sponsors" v-bind:value="sponsor.id">{{sponsor.first_name}} {{sponsor.last_name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" v-if="watermarks">
+        <div class="columns is-multiline">
+          <div class="column is-one-half-desktop is-half-tablet watermarks" v-for="watermark in watermarks">
+            <div class="card" v-bind:class="{highlight:watermark.id == selectedWatermark}" v-on:click="selectedWatermark = watermark.id">
+              <div class="card-image">
+                <figure class="image is-128x128">
+                  <img class="is-rounded" v-bind:src="'http://migrate-backend.test/watermarks/'+ watermark.id +'/' +watermark.name">
+                </figure>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="field">
         <p class="control">
           <button class="button is-success" v-on:click="update()">
@@ -75,23 +98,33 @@
     data() {
 			return {
 				video: '',
+        videoData: '',
         loader: true,
         generalError: '',
         filename: '',
-        title: '',
-        description: ''
+        sponsors: '',
+        watermarks: '',
+        selectedWatermark: '',
+        selectedSponsor: '',
+        file: '',
 			}
 		},
 		mounted() {
       this.loadVideo()
+      this.getSponsors()
 		},
 		methods: {
       handleFileUpload() {
         this.filename = this.$refs.file.files[0].name;
         this.type = this.$refs.file.files[0].type;
         this.size = this.$refs.file.files[0].size;
+        this.file = this.$refs.file.files[0];
       },
       loadVideo() {
+        this.$axios.get(`/videos/${this.$route.params.id}`)
+        .then((getResponse) => {
+          this.videoData = getResponse.data.data
+        })
         this.$axios.get(`/private/view/${this.$route.params.id}`, {responseType: 'blob'})
         .then((getResponse) => {
           this.video = URL.createObjectURL(getResponse.data)
@@ -105,23 +138,46 @@
           this.loader = false
         })
       },
-			update() {
-			  this.$axios.patch(`/videos/${this.$route.params.id}`, {
-					title: this.video.title,
-          description: this.video.description,
-          file: this.$refs.file.files[0],
-          filename: this.filename,
-          type: this.type,
-          size: this.size,
-				}).then(response => {
+			update(){
+        this.loader = true;
+        let formData = new FormData();
+        formData.append('title', this.videoData.title);
+        formData.append('description', this.videoData.description);
+        formData.append('file', this.file);
+        formData.append('filename', this.filename);
+        formData.append('user_id', this.user.id);
+        formData.append('watermark_id', this.selectedWatermark);
+        formData.append('selectedSponsor', this.selectedSponsor);
+        formData.append('type', this.videoData.type);
+        formData.append('size', this.videoData.size);
+        this.$axios.post( `/videos/update/${this.$route.params.id}`,
+        formData,
+            {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+          }
+        ).then(response => {
 						this.loader = false;
-            console.log(this.$refs.file.files[0]);
-            //this.$router.push("/dashboard");
+            this.$router.push("/dashboard");
 					},err => {
             this.loader = false;
             this.generalError = "An error occured uploading your video.  Please try again later."
 				  });
-			}
+      },
+      getSponsors() {
+        this.$axios.$get(`/users/`)
+        .then((getResponse) => {
+          this.sponsors = getResponse
+        })
+      },
+      sponsorSelect() {
+        this.selectedSponsor = this.$refs.sponsor.value
+        this.$axios.$get(`/watermark/${this.$refs.sponsor.value}`)
+        .then((getResponse) => {
+          this.watermarks = getResponse
+        })
+      },
 		}
   }
 
@@ -137,5 +193,22 @@
     position: relative;
   }
 
+  .container {
+    max-width: 500px;
+  }
+
+  .watermarks .card {
+    opacity: .5;
+    transition: all .2s ease;
+  }
+
+  .watermarks .card {
+    opacity: .5;
+    transition: all .2s ease;
+  }
+
+  .watermarks .highlight {
+    opacity: 1;
+  }
 
 </style>

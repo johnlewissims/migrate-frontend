@@ -15,6 +15,27 @@
         </p>
         <p class="help is-danger" v-if="errors.description">{{errors.description[0]}}</p>
       </div>
+      <div class="field" v-if="sponsors">
+        <div class="select">
+          <select ref="sponsor" v-on:change="sponsorSelect()">
+            <option>Select a Sponsor</option>
+            <option v-for="sponsor in sponsors" v-bind:value="sponsor.id">{{sponsor.first_name}} {{sponsor.last_name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" v-if="watermarks">
+        <div class="columns is-multiline">
+          <div class="column is-one-half-desktop is-half-tablet watermarks" v-for="watermark in watermarks">
+            <div class="card" v-bind:class="{highlight:watermark.id == selectedWatermark}" v-on:click="selectedWatermark = watermark.id">
+              <div class="card-image">
+                <figure class="image is-128x128">
+                  <img class="is-rounded" v-bind:src="'http://migrate-backend.test/watermarks/'+ watermark.id +'/' +watermark.name">
+                </figure>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="field is-horizontal">
         <div class="field-body">
           <div class="field">
@@ -76,11 +97,30 @@
         description: '',
         loader: false,
         generalError: '',
+        sponsors: '',
+        watermarks: '',
+        selectedWatermark: '',
+        selectedSponsor: '',
       }
     },
+    mounted() {
+      this.getSponsors()
+    },
     methods: {
+      getSponsors() {
+        this.$axios.$get(`/users/`)
+        .then((getResponse) => {
+          this.sponsors = getResponse
+        })
+      },
+      sponsorSelect() {
+        this.selectedSponsor = this.$refs.sponsor.value
+        this.$axios.$get(`/watermark/${this.$refs.sponsor.value}`)
+        .then((getResponse) => {
+          this.watermarks = getResponse
+        })
+      },
       handleFileUpload() {
-        console.log(this.file);
         this.file = this.$refs.file.files[0];
         this.filename = this.$refs.file.files[0].name;
         this.type = this.$refs.file.files[0].type;
@@ -94,6 +134,8 @@
         formData.append('file', this.file);
         formData.append('filename', this.filename);
         formData.append('user_id', this.user.id);
+        formData.append('watermark_id', this.selectedWatermark);
+        formData.append('selectedSponsor', this.selectedSponsor);
         formData.append('type', this.type);
         formData.append('size', this.size);
         this.$axios.post( 'videos',
@@ -124,6 +166,20 @@
 
   .form-wrap {
     position: relative;
+  }
+
+  .watermarks .card {
+    opacity: .5;
+    transition: all .2s ease;
+  }
+
+  .watermarks .card {
+    opacity: .5;
+    transition: all .2s ease;
+  }
+
+  .watermarks .highlight {
+    opacity: 1;
   }
 
 

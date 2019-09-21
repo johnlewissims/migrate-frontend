@@ -8,7 +8,6 @@
         <div class="column">
           <MyVideos />
         </div>
-      </div>
     </div>
   </div>
 </template>
