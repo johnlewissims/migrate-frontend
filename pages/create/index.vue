@@ -1,8 +1,28 @@
 <template>
-  <div class="container form-wrap">
+  <div class="container form-wrap upload">
     <h1 class="title">Create</h1>
-    <hr>
+    <p class="upload-1">Upload your video below.</p>
     <div class="form-wraper">
+      <div class="field">
+        <div class="field-body">
+          <div class="field">
+            <div class="file has-name">
+              <label class="file-label">
+                <input class="file-input" ref="file" type="file" v-on:change="handleFileUpload()">
+                <span class="file-cta">
+                  <span class="file-icon">
+                    <i class="fas fa-upload"></i>
+                  </span>
+                  <span class="file-label">
+                    Upload a Video
+                  </span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="help">{{ this.filename }}</p>
       <div class="field">
         <p class="control">
           <input v-model.trim="title" class="input" type="text" placeholder="Video Title">
@@ -11,7 +31,7 @@
       </div>
       <div class="field">
         <p class="control">
-          <textarea v-model.trim="description" class="textarea" type="text" placeholder="Description" />
+          <textarea v-model.trim="description" class="textarea" type="text" placeholder="Social Blurb" />
         </p>
         <p class="help is-danger" v-if="errors.description">{{errors.description[0]}}</p>
       </div>
@@ -23,54 +43,17 @@
           </select>
         </div>
       </div>
-      <div class="field" v-if="watermarks">
-        <div class="columns is-multiline">
-          <div class="column is-one-half-desktop is-half-tablet watermarks" v-for="watermark in watermarks">
-            <div class="card" v-bind:class="{highlight:watermark.id == selectedWatermark}" v-on:click="selectedWatermark = watermark.id">
-              <div class="card-image">
-                <figure class="image is-128x128">
-                  <img class="is-rounded" v-bind:src="'http://migrate-backend.test/watermarks/'+ watermark.id +'/' +watermark.name">
-                </figure>
-              </div>
+      <div class="watermarks_container" v-if="watermarks">
+        <p class="instructions">Select a Watermark for the Video.</p>
+        <div class="field watermarks">
+          <div class="watermark_wrap" v-for="watermark in watermarks">
+            <div class="watermark" v-bind:class="{highlight:watermark.id == selectedWatermark}" v-on:click="selectedWatermark = watermark.id">
+              <img v-bind:src="'https://mygr8.ejincollective.com/storage/watermarks/'+ watermark.id +'/' +watermark.name">
+              <p class="name">{{watermark.name}}</p>
             </div>
           </div>
         </div>
       </div>
-      <div class="field is-horizontal">
-        <div class="field-body">
-          <div class="field">
-            <div class="file has-name">
-              <label class="file-label">
-                <input class="file-input" ref="file" type="file" v-on:change="handleFileUpload()">
-                <span class="file-cta">
-                  <span class="file-icon">
-                    <i class="fas fa-upload"></i>
-                  </span>
-                  <span class="file-label">
-                    Upload a file…
-                  </span>
-                </span>
-              </label>
-            </div>
-          </div>
-          <div class="field is-hidden-desktop">
-            <div class="file has-name">
-              <label class="file-label">
-                <input class="file-input" type="file" accept="video/*" v-on:change="handleFileUpload()" capture>
-                <span class="file-cta">
-                  <span class="file-icon">
-                    <i class="fas fa-video"></i>
-                  </span>
-                  <span class="file-label">
-                    Record a Video
-                  </span>
-                </span>
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <p class="help">{{ this.filename }}</p>
       <div class="field">
         <p class="control">
           <button class="button is-success" v-on:click="submitFile()">
@@ -108,7 +91,7 @@
     },
     methods: {
       getSponsors() {
-        this.$axios.$get(`/users/`)
+        this.$axios.$get(`/sponsors/${this.user.id}`)
         .then((getResponse) => {
           this.sponsors = getResponse
         })
@@ -147,7 +130,7 @@
           }
         ).then(response => {
 						this.loader = false;
-            this.$router.push("/dashboard");
+            this.$router.push("/dashboard/library");
 					},err => {
             this.loader = false;
             this.generalError = "An error occured uploading your video.  Please try again later."
@@ -160,26 +143,111 @@
 
 <style scoped>
 
+  .upload h1 {
+    color: #55006f;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 0px;
+  }
+
+  .upload-1 {
+    text-align: center;
+    color: #55006f;
+  }
+
+  .file-cta, .file-cta:hover, .file-cta:focus {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    color: #fff;
+    background: #55006f;
+    border-radius: 6px !important;
+  }
+
+  .file-cta, .button, .button:hover, .button:focus {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    font-size: 18px;
+    background: #55006f;
+  }
+
+  .form-wraper {
+    margin-top: 25px;
+    margin-bottom: 25px;
+  }
+
+  .input, .textarea, .select select {
+    border: solid 1px #55006f;
+    border-radius: 6px !important;
+  }
+
+  .select select {
+    color: #55006f;
+  }
+
+  .file label {
+    width: 100%;
+  }
+
+
   .help {
     margin-bottom: 10px;
   }
 
   .form-wrap {
     position: relative;
+    max-width: 330px;
+    padding: 10px 10px;
   }
 
-  .watermarks .card {
-    opacity: .5;
-    transition: all .2s ease;
+  .watermarks {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
-  .watermarks .card {
-    opacity: .5;
+  .watermark_wrap {
+    width: 50%;
+  }
+
+  .watermarks img {
+    max-width: 100px;
+    display: block;
+    margin: auto;
+    margin-bottom: 10px;
+  }
+
+  .watermarks .watermark {
     transition: all .2s ease;
+    opacity: .5;
   }
 
   .watermarks .highlight {
     opacity: 1;
+  }
+
+  .name {
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .watermarks_container {
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+
+  .watermarks_container .instructions {
+    margin-bottom: 10px;
+    color: #55006f;
+    text-align: center;
+  }
+
+  @media only screen and (max-width: 767px) {
+    .watermark_wrap {
+      width: 100%;
+    }
   }
 
 

@@ -1,6 +1,6 @@
 
 export default {
-  mode: 'universal',
+  mode: 'spa',
   /*
   ** Headers of the page
   */
@@ -13,7 +13,8 @@ export default {
     ],
     link: [
       { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css' },
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Nunito+Sans:300,300i,400,700,700i&display=swap' }
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Nunito+Sans:300,300i,400,700,700i&display=swap' },
+      { rel: 'icon', type: 'image/x-icon', href: 'images/favicon.png' }
 
     ],
     script: [
@@ -56,14 +57,15 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/auth'
+    '@nuxtjs/auth',
+    '@nuxtjs/pwa'
   ],
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: "http://migrate-backend.test/api"
+    baseURL: "https://mygr8.ejincollective.com/api"
   },
   auth: {
     strategies: {

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <Navbar />
+  <div :class="{ 'welcome': $route.path==='/' || $route.path==='/login' || $route.path==='/register' || $route.path==='/dashboard' }" >
+    <Navbar v-if="$route.path !='/' && $route.path !='/register' && $route.path !='/login'" :class="{ 'hidden-nav': $route.path==='/' || $route.path==='/login'  || $route.path==='/register' || $route.path==='/dashboard' }" />
     <nuxt />
   </div>
 </template>
@@ -29,3 +29,12 @@ export default {
 }
 
 </script>
+
+<style>
+
+  body .hidden-nav {
+    display: none;
+    max-height: 0px;
+  }
+
+</style>

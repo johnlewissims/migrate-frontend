@@ -1,6 +1,6 @@
-.page-enter-active, .page-leave-active {
+/* .page-enter-active, .page-leave-active {
   transition: all 0.5s;
-}
+} */
 
 .page-enter, .page-leave-action {
   opacity: 0;
@@ -11,10 +11,14 @@
   font-family: 'Nunito Sans', sans-serif;
 }
 
+body {
+  margin: 0px;
+}
+
 .form-wrap {
   max-width: 330px;
-  margin-top: 100px;
-  margin-bottom: 100px;
+  padding-top: 100px;
+  padding-bottom: 100px;
 }
 
 .select, .select select {
@@ -24,7 +28,110 @@
 .container {
   padding-left: 10px;
   padding-right: 10px;
+  display: block;
+  margin: auto;
 }
+
+body .input, body select {
+  border-radius: 8px;
+  min-height: 45px;
+  padding: 15px;
+}
+
+body .login .button {
+  width: 100%;
+  min-height: 45px;
+  font-size: 20px;
+  border-radius: 8px;
+  color: linear-gradient(rgba(50, 87, 219, 0.65),rgba(218, 28, 92, 0.65));
+}
+
+.select:not(.is-multiple) {
+  height: auto;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.navbar-brand {
+  width: 100%;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.navbar-item img {
+  height: 50px;
+  max-height: 100%;
+}
+
+/* General Stylesheet */
+
+.welcome {
+  min-height: 100vh;
+  background:
+  /* top, transparent red, faked with gradient */
+    linear-gradient(
+      rgba(50, 87, 219, 0.75),
+      rgba(74, 25, 110, 0.75)
+    ),
+    /* bottom, image */
+    url('https://mygr8.ejincollective.com/storage/images/citi.jpg');
+  background-position: center top;
+  background-size: cover;
+}
+
+.login {
+  text-align: center;
+  color: #fff;
+}
+
+.login h1 {
+  margin-bottom: 5px;
+}
+
+.login p {
+  margin: 0px;
+}
+
+.login h1 {
+  margin-bottom: 0px !important;
+  color: #fff;
+  font-size: 45px;
+  font-weight: 400;
+}
+
+.login .login_1 {
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+.login .signup-link {
+  font-size: 16px;
+}
+
+.login form {
+  margin-bottom: 50px;
+}
+
+.login .register-link, .login .register-link:hover, .login .register-link:focus {
+  color: #fff;
+  text-decoration: underline;
+}
+
+h1.register_1 {
+  margin-bottom: 25px !important;
+}
+
+.register .select {
+}
+
+
+
 
 /* Loading Wheel */
 

@@ -1,7 +1,8 @@
 <template>
   <div>
-    <Influencer v-if="user.role == 'Influencer'" />
-    <Sponsor v-if="user.role == 'Sponsor'" />
+    <Influencer v-if="user.role == 'I'" />
+    <Sponsor v-if="user.role == 'S'" />
+    <Agent v-if="user.role == 'A'" />
   </div>
 </template>
 
@@ -9,11 +10,13 @@
 
   import Influencer from '@/pages/dashboard/influencer-dashboard.vue'
   import Sponsor from '@/pages/dashboard/sponsor-dashboard.vue'
+  import Agent from '@/pages/dashboard/agent-dashboard.vue'
   export default{
     middleware: ['auth'],
     components: {
       Influencer,
-      Sponsor
+      Sponsor,
+      Agent
     },
     // data() {
     //   return {
@@ -21,17 +24,20 @@
     //     }
     //   }
     // },
-    // mounted:function(){
-    //   this.method1()
-    // },
-    // methods: {
-    //   method1:function(){
-    //     console.log(this.user);
-    //   },
-    //   submit() {
-    //
-    //   }
-    // }
+    mounted:function(){
+      this.forward()
+    },
+    methods: {
+      forward() {
+        console.log(this.user);
+        if(this.user.role == "S" || this.user.role == "A") {
+          this.$router.push("/dashboard/library");
+        }
+      },
+      submit() {
+
+      }
+    }
   }
 
 </script>

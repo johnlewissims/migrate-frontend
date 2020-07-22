@@ -1,53 +1,19 @@
 <template>
   <div class="container form-wrap">
-    <h1 class="title">Edit</h1>
-    <hr>
     <div class="form-wraper">
-      <div class="field">
-        <p class="control">
-          <input class="input" type="text" v-model="videoData.title">
-        </p>
-        <p class="help is-danger" v-if="errors.title">{{errors.title[0]}}</p>
-      </div>
-      <div class="field">
-        <p class="control">
-          <textarea v-model.trim="videoData.description" class="textarea" type="text" placeholder="Description" />
-        </p>
-        <p class="help is-danger" v-if="errors.description">{{errors.description[0]}}</p>
-      </div>
-      <div v-if="!filename">
-        <video v-if="video" style="width:600px;max-width:100%;" controls="">
-          <source v-bind:src="video" type="video/mp4">
-          Your browser does not support HTML5 video.
-        </video>
-      </div>
+
       <div class="field is-horizontal">
         <div class="field-body">
           <div class="field">
             <div class="file has-name">
-              <label class="file-label">
+              <label class="file-label handle">
                 <input class="file-input" ref="file" type="file" v-on:change="handleFileUpload()">
                 <span class="file-cta">
                   <span class="file-icon">
                     <i class="fas fa-upload"></i>
                   </span>
                   <span class="file-label">
-                    Upload a file…
-                  </span>
-                </span>
-              </label>
-            </div>
-          </div>
-          <div class="field is-hidden-desktop">
-            <div class="file has-name">
-              <label class="file-label">
-                <input class="file-input" type="file" accept="video/*" v-on:change="handleFileUpload()" capture>
-                <span class="file-cta">
-                  <span class="file-icon">
-                    <i class="fas fa-video"></i>
-                  </span>
-                  <span class="file-label">
-                    Record a Video
+                    Upload a New Video
                   </span>
                 </span>
               </label>
@@ -55,6 +21,22 @@
           </div>
         </div>
       </div>
+
+      <div class="field">
+        <p class="control">
+          <span><b>Title</b></span>
+          <input class="input" type="text" v-model="videoData.title">
+        </p>
+        <p class="help is-danger" v-if="errors.title">{{errors.title[0]}}</p>
+      </div>
+      <div class="field">
+        <p class="control">
+          <span><b>Description</b></span>
+          <textarea v-model.trim="videoData.description" class="textarea" type="text" placeholder="Description" />
+        </p>
+        <p class="help is-danger" v-if="errors.description">{{errors.description[0]}}</p>
+      </div>
+
       <p class="help">{{ this.filename }}</p>
       <div class="field" v-if="filename">
         <div class="select">
@@ -70,7 +52,7 @@
             <div class="card" v-bind:class="{highlight:watermark.id == selectedWatermark}" v-on:click="selectedWatermark = watermark.id">
               <div class="card-image">
                 <figure class="image is-128x128">
-                  <img class="is-rounded" v-bind:src="'http://migrate-backend.test/watermarks/'+ watermark.id +'/' +watermark.name">
+                  <img class="is-rounded" v-bind:src="'https://mygr8.ejincollective.com/storage/watermarks/'+ watermark.id +'/' +watermark.name">
                 </figure>
               </div>
             </div>
@@ -80,7 +62,7 @@
       <div class="field">
         <p class="control">
           <button class="button is-success" v-on:click="update()">
-            Submit Video
+            Update Video
           </button>
         </p>
       </div>
@@ -112,6 +94,7 @@
 		mounted() {
       this.loadVideo()
       this.getSponsors()
+      this.$parent.$parent.$children[0].pageTitle = "Edit Video"
 		},
 		methods: {
       handleFileUpload() {
@@ -121,6 +104,7 @@
         this.file = this.$refs.file.files[0];
       },
       loadVideo() {
+        this.loader = false
         this.$axios.get(`/videos/${this.$route.params.id}`)
         .then((getResponse) => {
           this.videoData = getResponse.data.data
@@ -159,14 +143,14 @@
           }
         ).then(response => {
 						this.loader = false;
-            this.$router.push("/dashboard");
+            this.$router.push("/dashboard/library");
 					},err => {
             this.loader = false;
             this.generalError = "An error occured uploading your video.  Please try again later."
 				  });
       },
       getSponsors() {
-        this.$axios.$get(`/users/`)
+        this.$axios.$get(`/sponsors/${this.user.id}`)
         .then((getResponse) => {
           this.sponsors = getResponse
         })
@@ -184,6 +168,39 @@
 </script>
 
 <style scoped>
+
+  .form-wrap {
+    max-width: 330px !important;
+    padding-top: 25px;
+  }
+
+  video {
+    max-width: 200px !important;
+    display: block;
+    margin: auto;
+    margin-bottom: 15px;
+  }
+
+  .file-cta, .file-cta:hover, .file-cta:focus {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    color: #fff;
+    background: #55006f;
+    border-radius: 6px !important;
+  }
+
+  .file-cta, .button, .button:hover, .button:focus {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    font-size: 18px;
+    background: #55006f;
+  }
+
+  .handle {
+    width: 100%;
+  }
 
   .help {
     margin-bottom: 10px;
